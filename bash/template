@@ -1,12 +1,17 @@
 #!/bin/bash
+# ABOUT: Print a bash template to stdout. Use redirect to create a file
+# KEYWORDS: bash template usage
+cat << EndOfMessage
+#!/bin/bash
 # ABOUT:
 # KEYWORDS:
 display_usage() {
-	echo -e "Usage: `basename $0` [arguments]"
+	echo -e "Usage: \`basename \$0\` [arguments]"
 }
 
 # if less than two arguments supplied, display usage
-if [  $# -ge 0 ]; then
+if [  \$# -ge 0 ]; then
 	display_usage
 	exit 1
 fi
+EndOfMessage
