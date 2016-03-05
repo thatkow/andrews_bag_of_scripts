@@ -1,0 +1,12 @@
+#!/bin/bash
+# ABOUT:
+# KEYWORDS:
+display_usage() {
+	echo -e "Usage: `basename $0` [arguments]"
+}
+
+# if less than two arguments supplied, display usage
+if [  $# -ge 0 ]; then
+	display_usage
+	exit 1
+fi
