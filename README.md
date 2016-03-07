@@ -1,6 +1,6 @@
 # andrews_bag_of_scripts
 
-<img src="kdtub.png" width=300 style="float: right;">
+![Alt](kdtub.png#right)
 
 # bash
 To add bash scripts to you PATH:
