@@ -10,4 +10,4 @@ echo "export PATH=$PATH:`realpath .`" >> ~/.bashrc; source ~/.bashrc # Here is s
 ```
 
 
-<img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/saikoa.png" alt="Saikoa" />
+<img align="right" src="http://libgdx.badlogicgames.com/img/saikoa.png" alt="Saikoa" />
