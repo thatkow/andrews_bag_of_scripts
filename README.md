@@ -1,6 +1,6 @@
 # andrews_bag_of_scripts
 
-![Alt](kdtub.png#right)
+->![Alt](kdtub.png)
 
 # bash
 To add bash scripts to you PATH:
