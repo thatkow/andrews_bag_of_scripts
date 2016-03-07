@@ -8,3 +8,6 @@ To add bash scripts to you PATH:
 cd bash/
 echo "export PATH=$PATH:`realpath .`" >> ~/.bashrc; source ~/.bashrc # Here is some extra text just to see what would happen if it was too long
 ```
+
+
+<img style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/saikoa.png" alt="Saikoa" />
