@@ -1,0 +1,20 @@
+#!/bin/bash
+# ABOUT:
+# KEYWORDS:
+display_usage() {
+	echo -e "Usage: `basename $0` [arguments]"
+}
+
+# if less than two arguments supplied, display usage
+if [  $# -ge 0 ]; then
+	display_usage
+	exit 1
+fi
+
+for i in *.markdown
+do 
+	pandoc -f markdown $i > "${i%.markdown}.html"
+	sed -i 's/\.markdown/.html/' "${i%.markdown}.html"
+done
+
+sed -i 's#<a href="README.html">Markdown</a>#<a href="README.markdown">Markdown</a>#g' README.html > /dev/null
