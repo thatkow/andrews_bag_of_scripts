@@ -1,0 +1,97 @@
+#! /bin/sh
+# XTERM icon name and title bar support
+# brianp@canb.auug.org.au
+# designed to be 'source'd from sh, ksh or bash
+# Provides:
+# 1. change of title bar to contain something more useful than 'xterm'
+#    This is based on the contents of XTITLE_TEMPLATE which is
+#    eval-ed; default is '${ICON_NAME} '$host
+#
+# 2. the xterm's icon name is set to ICON_NAME and the title bar
+#    is updated using the command:
+#      'xi <new_icon_name>'
+#    just 'xi' will restore a changed name (and title bar)
+#
+# You can change the contents of XTITLE_TEMPLATE if desired. 
+#
+# $Id: xterm-cdxi,v 1.10 1999/10/07 12:56:56 brianp Exp brianp $
+################################################################
+# redefine cd to change title bar for xterms
+
+if [ "$TERM" = "xterm" -o "$TERM" = "xterm-color" -o "$TERM" = "xterm-256color" ]; then
+
+  osname=`uname -s`
+  host=`uname -n`
+  shell=`basename $SHELL`
+
+  if [ -z "${XTITLE_TEMPLATE}" ]; then
+    XTITLE_TEMPLATE='${ICON_NAME} '"${LOGNAME}@${host}"
+  fi
+
+  rmso='\e[m'
+  bold=`tput bold`
+  if [ "$shell" = bash -o "$osname" = Linux ]; then
+    _xtsay() {
+echo -e "$@"'\007\c' >&2
+}
+    if [ "$USER" = "root" ]; then
+	case "$TERM" in
+xterm*color) bold='\033[1m\033[31m'
+	     ;;
+	esac
+    fi
+
+    if [ -n "$bold" ]; then
+      PS1="$bold"'\u@\h \w\033[0m\n\$ '
+    else
+      PS1='\u@\h \W\$ '
+    fi
+  else
+    _xtsay() {
+/bin/echo "$@"'\007\c' >&2 
+}
+    if [ -n "$bold" ]; then
+      # we can use the whole of PWD, some shells dont do \n
+      PS1="$bold$LOGNAME@$host"' ${PWD}'\e[m'
+\$ '
+    else
+      PS1="$LOGNAME@$host"' ${PWD##/?*/}\$ '
+    fi
+  fi
+  unset bold
+
+  # ESC ] 1 sets the icon
+  # ESC ] 2 sets the title
+
+
+  # if first time, set the name
+  if [ -z "$ICON_NAME" ]; then
+    _xtsay '\033]2;'`eval echo ${XTITLE_TEMPLATE}`
+  fi
+
+  function xi {
+    # will these work for non-bash?
+    local icon_name
+    local save_icon_name
+
+    icon_name=${1:-$ICON_NAME}
+    # first set the icon name
+    if [ -n "$icon_name" ]; then
+       _xtsay '\033]1;'${icon_name} 1>&2
+    else
+       # boring
+       _xtsay '\033]1;xterm' 1>&2
+    fi
+
+    # now set the title bar
+    save_icon_name=${ICON_NAME}
+    ICON_NAME=${icon_name}
+    _xtsay '\033]2;'`eval echo ${XTITLE_TEMPLATE}`
+    # restore ICON_NAME 
+    [ $# -le 0 ] && ICON_NAME="${save_icon_name}"
+  }
+
+  # some shells dont do -v
+  unset osname host shell
+
+fi

@@ -1,0 +1,17 @@
+1980  mb xterm-cdxi bin
+ 1981  rmdir bin
+ 1982  mkdir ~/bin
+ 1983  mv xterm-cdxi ~/bin
+ 1984  vi ~/.bashrc 
+ 1985  . ~/bin/xterm-cdxi 
+ 1986  vi ~/bin/xterm-cdxi
+ 1987  dos2unix ~/bin/xterm-cdxi
+ 1988  . ~/bin/xterm-cdxi
+ 1989  ls
+ 1990  echo "hohoiaher"
+ 1991  alias
+ 1992  less -X ~/bin/xterm-cdxi
+ 1993  cd ~/Pictures/
+ 1994  xi WOR_ABC
+ 1995  xi kdcompute-public
+
