@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for i in `cat toremove`
+do
+	sed -i "/,$i,/d" phenotype_example_file_qc.csv
+done
