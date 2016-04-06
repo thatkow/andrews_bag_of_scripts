@@ -7,11 +7,12 @@ cat << EndOfMessage
 # KEYWORDS:
 display_usage() {
 	echo -e "Usage: \`basename \$0\` [arguments]"
+	echo -e "Usage: `basename $0` --help"
   echo "template bash script"
 }
 
 # if less than two arguments supplied, display usage
-if [  \$# -ge 0 ]; then
+if [  \$# -ge 0 ] || [ $1 == "--help" ]; then
 	display_usage
 	exit 1
 fi
