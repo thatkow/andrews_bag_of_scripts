@@ -11,3 +11,5 @@ echo "export PATH=$PATH:`realpath .`" >> ~/.bashrc; source ~/.bashrc # Here is s
 
 
 <img align="right" src="http://libgdx.badlogicgames.com/img/saikoa.png" alt="Saikoa" />
+
+[link to subpage](documentation/subpage)
