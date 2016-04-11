@@ -2,4 +2,4 @@
 
 This is a readme...
 
-[link back](../..)
+[link back](~)
