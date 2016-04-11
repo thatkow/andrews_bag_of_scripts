@@ -1,0 +1,17 @@
+#!/bin/bash
+# ABOUT: Copy html to another directory, renaming "./" to point to local
+# KEYWORDS:
+display_usage() {
+	echo -e "Usage: `basename $0` [html file] [move to] [move from]"
+	echo -e "Usage: template --help"
+  echo "template bash script"
+}
+
+# if less than two arguments supplied, display usage
+if [  $# -ne 3 ] || [ $1 == "--help" ]; then
+	display_usage
+	exit 1
+fi
+
+cp $1 $2/$1
+sed -i "s#\./#./$3/#g" $2/$1
