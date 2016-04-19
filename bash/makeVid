@@ -1,0 +1,49 @@
+#!/bin/bash
+# ABOUT:
+# KEYWORDS:
+display_usage() {
+	echo -e "Usage: `basename $0` [final] [ogv 1] [ogv 2] [...]"
+	echo -e "Usage: template --help"
+  echo "template bash script"
+}
+
+# if less than two arguments supplied, display usage
+if [  $# -lt 2 ] || [ $1 == "--help" ]; then
+	display_usage
+	exit 1
+fi
+
+dest=$1
+shift;
+
+gifs=""
+for file in "$@"; do
+	dir=`mktemp -d`
+	if [ ${file: -4} == ".ogv" ]; then
+		mplayer -ao null $file -vo jpeg:outdir=$dir
+		mogrify -resample 72x72 -resize 256x256 $dir/*
+		convert $dir/* $dir/out.gif
+		gifs="$gifs $dir/out.gif"
+	elif [ ${file: -4} == ".gif" ]; then
+		cp ${file} $dir/out.gif
+		mogrify -resample 72x72 -resize 256x256 $dir/out.gif
+		gifs="$gifs $dir/out.gif"
+	else
+		echo "ERROR: Unknown format"
+		exit 1
+	fi
+done
+
+convert $gifs $dest
+
+#sub_ogv=$1
+#ret_ogv=$2
+#dest=$3
+#
+#sub_dir=`mktemp -d`
+#ret_dir=`mktemp -d`
+#
+#mplayer -ao null $sub_ogv  -vo jpeg:outdir=$sub_dir
+#mplayer -ao null $ret_ogv  -vo jpeg:outdir=$ret_dir
+#
+#convert $sub_dir/* $ret_dir/* $dest
