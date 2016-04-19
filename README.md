@@ -6,7 +6,7 @@
 To add bash scripts to you PATH:
 ```
 cd bash/
-echo "export PATH=$PATH:`realpath .`" >> ~/.bashrc; source ~/.bashrc # Here is some extra text just to see what would happen if it was too long
+echo "export PATH=\$PATH:`realpath .`" >> ~/.bashrc; source ~/.bashrc # Here is some extra text just to see what would happen if it was too long
 ```
 
 
