@@ -16,4 +16,28 @@ if [  \$# -ge 0 ] || [ "\$1" == "--help" ]; then
 	display_usage
 	exit 1
 fi
+
+# Colored logging
+info() {
+	GREEN='\033[0;32m'
+	NC='\033[0m' # No Color
+	printf "\${GREEN}INFO: \${1}\${NC}\n"
+}
+warn() {
+	YELLOW='\033[1;33m'
+	NC='\033[0m' # No Color
+	printf "\${YELLOW}WARNING: \${1}\${NC}\n"
+}
+fatal() {
+	RED='\033[0;31m'
+	NC='\033[0m' # No Color
+	printf "\${RED}FATAL: \${1}\${NC}\n"
+	exit 1
+}
+
+info "info msg"
+warn "warn msg"
+fatal "fatal msg"
+
+
 EndOfMessage
