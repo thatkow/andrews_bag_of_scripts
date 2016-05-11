@@ -18,17 +18,17 @@ if [  \$# -ge 0 ] || [ "\$1" == "--help" ]; then
 fi
 
 # Colored logging
-info() {
+function info() {
 	GREEN='\033[0;32m'
 	NC='\033[0m' # No Color
 	printf "\${GREEN}INFO: \${1}\${NC}\n"
 }
-warn() {
+function warn() {
 	YELLOW='\033[1;33m'
 	NC='\033[0m' # No Color
 	printf "\${YELLOW}WARNING: \${1}\${NC}\n"
 }
-fatal() {
+function fatal() {
 	RED='\033[0;31m'
 	NC='\033[0m' # No Color
 	printf "\${RED}FATAL: \${1}\${NC}\n"
