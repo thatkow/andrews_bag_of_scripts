@@ -1,0 +1,22 @@
+#!/bin/bash
+# ABOUT: Print a bash template to stdout. Use redirect to create a file
+# KEYWORDS: bash template usage
+cat << EndOfMessage
+# ABOUT:
+# KEYWORDS:
+# USAGE: Rscript `basename $0`
+suppressMessages(library('getopt'));
+suppressMessages(library(Matrix)); # nnzero
+
+# Args
+params = c(
+  'csv_file'   , 'i', 0, "character",
+  'output_file', 'o',0,"character"
+);
+spec = matrix(params, byrow=TRUE, ncol=4);
+prog_name = sub(".*=", "", commandArgs()[4]);
+opt = getopt(spec,command=paste("Rscript", prog_name));
+
+input = read.csv(opt\$csv_file);
+cat("You got Output!",file=opt\$output_file,append=TRUE,sep="");
+EndOfMessage
