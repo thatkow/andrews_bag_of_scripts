@@ -1,0 +1,56 @@
+#!/bin/bash
+# ABOUT:
+# KEYWORDS:
+display_usage() {
+	echo -e "Usage: `basename $0` [orig_report] [Imputed genotypic data]"
+	echo -e "Usage: template --help"
+  echo "template bash script"
+}
+
+# if less than two arguments supplied, display usage
+if [  $# -ne 2 ] || [ "$1" == "--help" ]; then
+	display_usage
+	exit 1
+fi
+
+
+ORIG_REPORT_PATH=$1
+IMPUTED_DATA_PATH=$2
+
+report_meta_columns="AlleleID,CloneID,ClusterTempIndex,AlleleSequence,ClusterConsensusSequence,ClusterSize,AlleleSeqDist,SNP,SnpPosition,CallRate,OneRatioRef,OneRatioSnp,FreqHomRef,FreqHomSnp,FreqHets,PICRef,PICSnp,AvgPIC,AvgCountRef,AvgCountSnp,RatioAvgCountRefAvgCountSnp,FreqHetsMinusFreqMinHom,AlleleCountsCorrelation,aggregateTagsTotal,DerivedCorrMinusSeedCorr,RepRef,RepSNP,RepAvg,PicRepRef,PicRepSNP,TotalPicRepRefTest,TotalPicRepSnpTest,"
+report_meta_columns_count=`echo "$report_meta_columns" | awk -F "," '{print NF-1}'`
+report_meta_columns_count_inc=$((report_meta_columns_count+1))
+
+columns_genotypic_data=`head -n 1  $IMPUTED_DATA_PATH | awk -F "," '{print NF-1}'`
+rows_genotypic_data=`wc -l $IMPUTED_DATA_PATH | cut -f1 -d" "`
+columns_report=`head -n 1  $ORIG_REPORT_PATH | awk -F "," '{print NF-1}'`
+rows_report=`wc -l  $ORIG_REPORT_PATH | cut -f1 -d" " `
+report_meta_lines=6
+report_meta_lines_inc=$((report_meta_lines+1))
+
+if [ "$((rows_genotypic_data - 1 + report_meta_lines))" -ne "$((rows_report))" ]; then
+	echo "ERROR: Line counts do not much"
+	exit 1
+fi
+
+if [ "$((columns_genotypic_data - 1 + report_meta_columns_count))" -ne "$((columns_report))" ]; then
+	echo "ERROR: Column count does not match"
+	exit 1
+fi
+
+
+meta_header=$(mktemp /tmp/metaHeader.XXXXX)
+meta_cols=$(mktemp /tmp/metaCols.XXXXX)
+geno_cut=$(mktemp /tmp/genoCut.XXXXX)
+
+head -n $report_meta_lines $ORIG_REPORT_PATH > $meta_header
+cut -f1-$report_meta_columns_count -d "," $ORIG_REPORT_PATH | sed 1,${report_meta_lines}d > $meta_cols
+tail -n +2  $IMPUTED_DATA_PATH | cut -f 2- -d"," > $geno_cut
+
+cat $meta_header
+paste -d , $meta_cols $geno_cut
+
+
+
+
+
