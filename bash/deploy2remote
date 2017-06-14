@@ -1,0 +1,46 @@
+#!/bin/bash
+# ABOUT: Installs R package onto remote server(s)
+# KEYWORDS: Install package remote
+display_usage() {
+	echo -e "Usage: \`basename \$0\` [package name] [Rscript path on remote] [servers...]"
+	echo -e "Usage: `basename $0` --help"
+  echo "template bash script"
+}
+
+# if less than two arguments supplied, display usage
+if [  "$#" -eq 3 ] || [ "$1" == "--help" ]; then
+	display_usage
+	exit 1
+fi
+
+PACKAGENAME_ECHO="$1"
+RPATH_ECHO="$2"
+REMOTES_ECHO="${@:3}"
+
+
+echo "PACKAGENAME=${PACKAGENAME_ECHO}"
+echo "RPATH=${RPATH_ECHO}"
+echo "REMOTES=\"${REMOTES_ECHO}\""
+
+cat << EndOfMessage
+#!/bin/bash	
+# ABOUT: Installs R package onto remote server(s)	
+# KEYWORDS: Install package remote	
+
+	
+case "\$OSTYPE" in	
+  *darwin*)	
+    PACKAGE=\`basename ../\$PACKAGENAME_*.tgz\`	
+    ;;	
+  *linux*)	
+    PACKAGE=\`basename ../\$PACKAGENAME_*.tar.gz\`	
+    ;;	
+esac	
+	
+for REMOTE in \${REMOTES}	
+do	
+	scp ../\$PACKAGE \$REMOTE:~	
+	ssh \$REMOTE "echo 'remove.packages(\"\${PACKAGENAME}\");'> /tmp/remove\${PACKAGENAME}.R; \${RPATH} /tmp/remove\${PACKAGENAME}.R"	
+	ssh \$REMOTE "echo 'install.packages(\"\$PACKAGE\",type=\"source\",repos=NULL)' > /tmp/install\${PACKAGENAME}.R; \${RPATH} /tmp/install\${PACKAGENAME}.R"	
+done	
+EndOfMessage
