@@ -2,23 +2,28 @@
 # ABOUT: Extracts the genotypic data from a DArT report file
 # KEYWORDS:
 display_usage() {
-	echo -e "Usage: `basename $0` [report file] "
+	echo -e "Usage: `basename $0` [report file] [startGenotypesColumnIdx] [startGenotypesRowIdx] [alleleIDColumnIdx] [sampleIDIdx] [outpath]"
 	echo -e "Usage: template --help"
   echo "template bash script"
 }
 
 # if less than two arguments supplied, display usage
-if [  $# -ne 1 ] || [ "$1" == "--help" ]; then
+if [  $# -ne 6 ] || [ "$1" == "--help" ]; then
 	display_usage
 	exit 1
 fi
 
 REPORT_PATH=$1
-report_meta_columns="AlleleID,CloneID,ClusterTempIndex,AlleleSequence,ClusterConsensusSequence,ClusterSize,AlleleSeqDist,SNP,SnpPosition,CallRate,OneRatioRef,OneRatioSnp,FreqHomRef,FreqHomSnp,FreqHets,PICRef,PICSnp,AvgPIC,AvgCountRef,AvgCountSnp,RatioAvgCountRefAvgCountSnp,FreqHetsMinusFreqMinHom,AlleleCountsCorrelation,aggregateTagsTotal,DerivedCorrMinusSeedCorr,RepRef,RepSNP,RepAvg,PicRepRef,PicRepSNP,TotalPicRepRefTest,TotalPicRepSnpTest,"
-report_meta_columns_count=`echo "$report_meta_columns" | awk -F "," '{print NF-1}'`
-report_meta_columns_count_inc=$((report_meta_columns_count+1))
+#report_meta_columns="AlleleID,CloneID,ClusterTempIndex,AlleleSequence,ClusterConsensusSequence,ClusterSize,AlleleSeqDist,SNP,SnpPosition,CallRate,OneRatioRef,OneRatioSnp,FreqHomRef,FreqHomSnp,FreqHets,PICRef,PICSnp,AvgPIC,AvgCountRef,AvgCountSnp,RatioAvgCountRefAvgCountSnp,FreqHetsMinusFreqMinHom,AlleleCountsCorrelation,aggregateTagsTotal,DerivedCorrMinusSeedCorr,RepRef,RepSNP,RepAvg,PicRepRef,PicRepSNP,TotalPicRepRefTest,TotalPicRepSnpTest,"
+#report_meta_columns_count=`echo "$report_meta_columns" | awk -F "," '{print NF-1}'`
+#report_meta_columns_count_inc=$((report_meta_columns_count+1))
+startGenotypesColumnIdx=$2
+startGenotypesRowIdx=$3
+alleleIDColumnIdx=$4
+sampleIDIdx=$5
+OUTPATH=$6
 
 
-sed 1,5d $REPORT_PATH | cut -d"," -f1,$report_meta_columns_count_inc- 
+awk "NR==${sampleIDIdx}||NR>=${startGenotypesRowIdx}" $REPORT_PATH | cut -d"," -f$alleleIDColumnIdx,$startGenotypesColumnIdx-  > $OUTPATH
 
 
