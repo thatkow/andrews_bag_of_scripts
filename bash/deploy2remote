@@ -23,11 +23,12 @@ echo "RPATH=${RPATH_ECHO}"
 echo "REMOTES=\"${REMOTES_ECHO}\""
 
 cat << EndOfMessage
-#!/bin/bash	
-# ABOUT: Installs R package onto remote server(s)	
-# KEYWORDS: Install package remote	
+#!/bin/bash
+# ABOUT: Installs R package onto remote server(s)
+# KEYWORDS: Install package remote
+
 n=`ls ../${PACKAGENAME}_* 2>/dev/null | wc -l`
-if [ "$n" -gt "0" ]; then
+if [ "$n" -gt "1" ]; then
         echo "Multiple packages found:"
         ls ../${PACKAGENAME}_*
         exit 1
@@ -44,9 +45,9 @@ esac
 
 for REMOTE in ${REMOTES}
 do
-        ssh $REMOTE "rm /tmp/${PACKAGENAME}_*"
-        ssh $REMOTE "echo 'remove.packages(\"${PACKAGENAME}\");'> /tmp/remove${PACKAGENAME}.R; ${RPATH} /tmp/remove${PACKAGENAME}.R"
-       scp ../${PACKAGE} $REMOTE:/tmp
-       ssh $REMOTE "echo 'install.packages(\"/tmp/$PACKAGE\",type=\"source\",repos=NULL)' > /tmp/install${PACKAGENAME}.R; ${RPATH} /tmp/install${PACKAGENAME}.R"
+        ssh $REMOTE "rm /tmp/${PACKAGENAME}_*" 2>/dev/null
+        ssh $REMOTE "echo 'remove.packages(\"${PACKAGENAME}\");'> /tmp/remove${PACKAGENAME}.R; ${RPATH} /tmp/remove${PACKAGENAME}.R"    2>/dev/null
+        scp ../${PACKAGE} $REMOTE:/tmp
+        ssh $REMOTE "echo 'install.packages(\"/tmp/$PACKAGE\",type=\"source\",repos=NULL)' > /tmp/install${PACKAGENAME}.R; ${RPATH} /tmp/install${PACKAGENAME}.R"
 done
 EndOfMessage
