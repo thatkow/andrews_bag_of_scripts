@@ -26,21 +26,27 @@ cat << EndOfMessage
 #!/bin/bash	
 # ABOUT: Installs R package onto remote server(s)	
 # KEYWORDS: Install package remote	
+n=`ls ../${PACKAGENAME}_* 2>/dev/null | wc -l`
+if [ "$n" -gt "0" ]; then
+        echo "Multiple packages found:"
+        ls ../${PACKAGENAME}_*
+        exit 1
+fi
 
-	
-case "\$OSTYPE" in	
-  *darwin*)	
-    PACKAGE=\`basename ../\$PACKAGENAME_*.tgz\`	
-    ;;	
-  *linux*)	
-    PACKAGE=\`basename ../\$PACKAGENAME_*.tar.gz\`	
-    ;;	
-esac	
-	
-for REMOTE in \${REMOTES}	
-do	
-	scp ../\$PACKAGE \$REMOTE:~	
-	ssh \$REMOTE "echo 'remove.packages(\"\${PACKAGENAME}\");'> /tmp/remove\${PACKAGENAME}.R; \${RPATH} /tmp/remove\${PACKAGENAME}.R"	
-	ssh \$REMOTE "echo 'install.packages(\"\$PACKAGE\",type=\"source\",repos=NULL)' > /tmp/install\${PACKAGENAME}.R; \${RPATH} /tmp/install\${PACKAGENAME}.R"	
-done	
+case "$OSTYPE" in
+  *darwin*)
+    PACKAGE=`basename ../${PACKAGENAME}_*.tgz`
+    ;;
+  *linux*)
+    PACKAGE=`basename ../${PACKAGENAME}_*.tar.gz`
+    ;;
+esac
+
+for REMOTE in ${REMOTES}
+do
+        ssh $REMOTE "rm /tmp/${PACKAGENAME}_*"
+        ssh $REMOTE "echo 'remove.packages(\"${PACKAGENAME}\");'> /tmp/remove${PACKAGENAME}.R; ${RPATH} /tmp/remove${PACKAGENAME}.R"
+       scp ../${PACKAGE} $REMOTE:/tmp
+       ssh $REMOTE "echo 'install.packages(\"/tmp/$PACKAGE\",type=\"source\",repos=NULL)' > /tmp/install${PACKAGENAME}.R; ${RPATH} /tmp/install${PACKAGENAME}.R"
+done
 EndOfMessage
