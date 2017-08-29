@@ -8,7 +8,7 @@ display_usage() {
 }
 
 # if less than two arguments supplied, display usage
-if [  "$#" -eq 3 ] || [ "$1" == "--help" ]; then
+if [  "$#" -ne 3 ] || [ "$1" == "--help" ]; then
 	display_usage
 	exit 1
 fi
@@ -22,7 +22,7 @@ echo "PACKAGENAME=${PACKAGENAME_ECHO}"
 echo "RPATH=${RPATH_ECHO}"
 echo "REMOTES=\"${REMOTES_ECHO}\""
 
-cat << EndOfMessage
+cat <<"EOF"
 #!/bin/bash
 # ABOUT: Installs R package onto remote server(s)
 # KEYWORDS: Install package remote
@@ -50,4 +50,5 @@ do
         scp ../${PACKAGE} $REMOTE:/tmp
         ssh $REMOTE "echo 'install.packages(\"/tmp/$PACKAGE\",type=\"source\",repos=NULL)' > /tmp/install${PACKAGENAME}.R; ${RPATH} /tmp/install${PACKAGENAME}.R"
 done
-EndOfMessage
+EOF
+
