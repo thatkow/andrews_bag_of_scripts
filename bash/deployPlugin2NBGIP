@@ -1,0 +1,5 @@
+result=${PWD##*/}          # to assign to a variable
+ssh root@nbgip2.kddart.com "rm -rf /opt/kdcompute_file_storage/KDCompute_Plugins/dropin/$result"
+ssh root@nbgip2.kddart.com "mkdir /opt/kdcompute_file_storage/KDCompute_Plugins/dropin/$result"
+scp -r * root@nbgip2.kddart.com:/opt/kdcompute_file_storage/KDCompute_Plugins/dropin/$result
+ssh root@nbgip2.kddart.com "chown -R tomcat:tomcat /opt/kdcompute_file_storage/KDCompute_Plugins/dropin/$result"
